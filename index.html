@@ -1,102 +1,456 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>项目 Demo 展示</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f6f8;
-        }
-        header {
-            background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 { margin: 0; color: #0366d6; }
-        .subtitle { color: #666; font-size: 1.1em; }
-        
-        section {
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .demo-box {
-            border: 2px dashed #ddd;
-            padding: 40px;
-            text-align: center;
-            background: #fafafa;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        button {
-            background-color: #2ea44f;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover { background-color: #2c974b; }
-        
-        footer { text-align: center; margin-top: 40px; color: #888; font-size: 0.9em; }
-        a { color: #0366d6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoBricks: Automated Modular Assembly</title>
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --bg-color: #f4f7f6;
+      --chat-bg: #ffffff;
+      --user-msg-bg: #0d6efd;
+      --bot-msg-bg: #f0f2f5;
+      --system-log-bg: #2d2d2d;
+      --system-text: #00ff41;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #e9ecef; /* 可替换为你的背景图 url('./fig/background.jpg') */
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      background: #28a745;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    /* Chat Area */
+    .chat-box {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.bot {
+      justify-content: flex-start;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+    
+    /* 替换为你的头像路径 */
+    .avatar.user-icon { background-image: url('./fig/USER.png'); margin-left: 10px; background-color: #ddd;}
+    .avatar.bot-icon { background-image: url('./fig/LEGO.jpg'); margin-right: 10px; background-color: #eee;}
+
+    .content {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .message.user .content {
+      background: var(--user-msg-bg);
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+
+    .message.bot .content {
+      background: var(--bot-msg-bg);
+      color: #333;
+      border-bottom-left-radius: 2px;
+    }
+
+    /* System Log Style (AutoBricks Internal Process) */
+    .system-log {
+      font-family: 'Courier New', Courier, monospace;
+      background: var(--system-log-bg);
+      color: #e0e0e0;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      border-left: 4px solid var(--primary-color);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .log-step {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .log-step.success { color: #4cd964; }
+    .log-step.warning { color: #ffcc00; }
+    .log-step.error { color: #ff3b30; }
+    .log-step.processing { color: #5ac8fa; }
+
+    /* Typing cursor */
+    .typing::after {
+      content: '▋';
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Input Area */
+    .input-area {
+      padding: 20px;
+      background: #fff;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary-color);
+    }
+
+    button {
+      padding: 10px 20px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Download Cards */
+    .file-card {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .file-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-color: var(--primary-color);
+    }
+
+    .file-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>My Project Demo</h1>
-        <p class="subtitle">这是一个基于 GitHub Pages 的演示页面</p>
-        <p><a href="https://github.com/你的用户名/你的仓库名">查看 GitHub 源码 &rarr;</a></p>
-    </header>
+<div class="main-container">
+  <header>
+    <h1>AutoBricks <span class="badge">v1.0 Demo</span></h1>
+    <div style="font-size: 0.9rem; color: #666;">Retrieval-Augmented Modular Assembly</div>
+  </header>
 
-    <section>
-        <h2>项目介绍</h2>
-        <p>这里可以写你的项目简介。例如：本项目旨在解决什么问题，使用了什么核心技术（如 Neural Networks, LLMs 等）。</p>
-    </section>
+  <div class="chat-box" id="chatBox">
+    <div class="message bot">
+      <div class="avatar bot-icon"></div>
+      <div class="content">
+        Hello! I am <strong>AutoBricks</strong>. 
+        <br><br>
+        I can help you build executable Spatio-Temporal forecasting models by retrieving standardized bricks and optimizing them using In-Context Reinforcement Learning.
+        <br><br>
+        Please describe your task (e.g., <em>"Build a traffic speed predictor for PeMS-BAY with high accuracy"</em>).
+      </div>
+    </div>
+  </div>
 
-    <section>
-        <h2>功能演示</h2>
-        <p>点击下方按钮测试交互功能：</p>
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Describe your forecasting task..." onkeypress="handleKeyPress(event)">
+    <button id="sendBtn" onclick="sendMessage()">Generate</button>
+  </div>
+</div>
+
+<script>
+  const chatBox = document.getElementById('chatBox');
+  const input = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  // 预设的 Demo 剧本：针对 PeMS-BAY 的交通预测
+  const demoScript = {
+    trigger: "pems", // 只要输入包含 pems 就会触发
+    flow: [
+      { type: 'text', content: "Received task: <strong>Traffic Speed Prediction on PeMS-BAY</strong>. <br>Initializing AutoBricks framework..." },
+      
+      // Step 1: Retrieval (Infrastructure Layer) [cite: 1, 75]
+      { type: 'log', delay: 800, content: [
+        { status: 'processing', text: "Analyzing Topological Constraints (Graph vs Grid)..." },
+        { status: 'success', text: "Identified Topology: <strong>Graph-based</strong> (Adjacency Matrix detected)." },
+        { status: 'processing', text: "Querying Brick Registry & History Logs..." },
+        { status: 'success', text: "Retrieved Spatial Anchors: <span style='color:#fff'>[DiffusionGCN, GAT, GWNet]</span>" },
+        { status: 'success', text: "Retrieved Temporal Anchors: <span style='color:#fff'>[DilatedTCN, Transformer]</span>" },
+        { status: 'warning', text: "<strong>Negative Constraint Applied:</strong> Filtered out LSTM-based variants due to high latency history." }
+      ]},
+
+      // Step 2: Assembly & Initial Attempt (Retravel & Assemble Layer) [cite: 55, 169]
+      { type: 'text', delay: 1500, content: "Constructing initial Directed Acyclic Graph (DAG) based on retrieved anchors..." },
+      
+      { type: 'log', delay: 1000, content: [
+        { status: 'processing', text: "<strong>Trial 1 Assembly:</strong> { Spatial: GAT, Temporal: Transformer, Fusion: Concat }" },
+        { status: 'processing', text: "Compiling to PyTorch Code..." },
+        { status: 'error', text: "<strong>RuntimeError Detected:</strong> Shape mismatch in skip-connection broadcasting (B, 64, N, 12) vs (B, 32, N, 12)." }, // Simulating Feedback [cite: 10]
+        { status: 'processing', text: "Generating Textual Gradient from error log..." },
+        { status: 'success', text: "<strong>Self-Correction:</strong> Inserted 1x1 Conv projection layer to align dimensions." }
+      ]},
+
+      // Step 3: Optimization & Final Result (Execution Layer)
+      { type: 'log', delay: 1500, content: [
+        { status: 'processing', text: "<strong>Trial 2 Assembly (Corrected):</strong> { Spatial: DiffusionGCN, Temporal: DilatedTCN }" },
+        { status: 'success', text: "Syntax Check: PASSED" },
+        { status: 'success', text: "Performance Est. (MAE): <strong>1.32</strong> (Superior to Baseline GWNet 1.68)" }, // Data from PDF Table 4 [cite: 304]
+        { status: 'success', text: "Cost Constraint: Satisfied (< 2M parameters)" }
+      ]},
+
+      // Step 4: Final Output
+      { type: 'final', delay: 1000, content: "Optimization Complete. The model <strong>AutoBricks-Graph-V2</strong> has been generated and validated." }
+    ]
+  };
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') sendMessage();
+  }
+
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    // 1. 用户消息上屏
+    addMessage('user', text);
+    input.value = '';
+    input.disabled = true;
+    sendBtn.disabled = true;
+    
+    // 2. 模拟系统响应
+    await processAutoBricksLogic(text);
+
+    input.disabled = false;
+    sendBtn.disabled = false;
+    input.focus();
+  }
+
+  function addMessage(role, htmlContent) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${role}`;
+    
+    // Icon
+    const avatar = document.createElement('div');
+    avatar.className = `avatar ${role}-icon`;
+    
+    // Content Bubble
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.innerHTML = htmlContent;
+
+    if (role === 'user') {
+      msgDiv.appendChild(content);
+      msgDiv.appendChild(avatar);
+    } else {
+      msgDiv.appendChild(avatar);
+      msgDiv.appendChild(content);
+    }
+
+    chatBox.appendChild(msgDiv);
+    scrollToBottom();
+    return content;
+  }
+
+  function createSystemLog(logLines) {
+    const logDiv = document.createElement('div');
+    logDiv.className = 'system-log';
+    
+    let html = '';
+    logLines.forEach(line => {
+      let icon = '•';
+      if (line.status === 'success') icon = '✔';
+      if (line.status === 'error') icon = '✖';
+      if (line.status === 'warning') icon = '⚠';
+      if (line.status === 'processing') icon = '⚡';
+      
+      html += `<div class="log-step ${line.status}"><span>${icon}</span> ${line.text}</div>`;
+    });
+    
+    logDiv.innerHTML = html;
+    return logDiv;
+  }
+
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function typeWriter(element, text) {
+    // 简单的打字机效果（如果是纯文本）
+    // 这里如果内容包含 HTML 标签，建议直接插入，或者做更复杂的解析
+    // 为了 Demo 稳定性，我们直接 fade in 整个 HTML
+    element.innerHTML = text; 
+    return;
+  }
+
+  async function processAutoBricksLogic(userText) {
+    // 检查是否触发 Demo 脚本
+    const isDemo = userText.toLowerCase().includes(demoScript.trigger);
+    
+    if (isDemo) {
+      for (const step of demoScript.flow) {
+        await sleep(step.delay || 1000);
         
-        <div class="demo-box">
-            <p id="output-text">等待操作...</p>
-            <button onclick="runDemo()">运行演示</button>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 My Project. Hosted on GitHub Pages.</p>
-    </footer>
-
-    <script>
-        // 这里写你的简单的交互逻辑
-        function runDemo() {
-            const output = document.getElementById('output-text');
-            output.innerText = "处理中...";
-            output.style.color = "#d73a49";
-            
-            setTimeout(() => {
-                output.innerText = "成功！这是 JavaScript 返回的结果。";
-                output.style.color = "#2ea44f";
-            }, 1000);
+        if (step.type === 'text') {
+          addMessage('bot', step.content);
+        } else if (step.type === 'log') {
+          // 在最后一个 Bot 消息中追加 Log，或者新建一个 Bot 消息
+          // 这里我们新建一个看起来像 System 的 Bot 消息
+          const msgDiv = document.createElement('div');
+          msgDiv.className = 'message bot';
+          const avatar = document.createElement('div');
+          avatar.className = 'avatar bot-icon';
+          const content = document.createElement('div');
+          content.className = 'content';
+          content.style.background = 'transparent'; // Log 自身有背景
+          content.style.padding = '0';
+          
+          content.appendChild(createSystemLog(step.content));
+          
+          msgDiv.appendChild(avatar);
+          msgDiv.appendChild(content);
+          chatBox.appendChild(msgDiv);
+          scrollToBottom();
+        } else if (step.type === 'final') {
+          const finalMsg = addMessage('bot', step.content);
+          // 添加下载链接
+          const dlContainer = document.createElement('div');
+          dlContainer.innerHTML = `
+            <a href="#" class="file-card" onclick="alert('Downloading PyTorch Model...')">
+              <span class="file-icon">🐍</span>
+              <div>
+                <div style="font-weight:600">AutoBricks_Generated.py</div>
+                <div style="font-size:0.8rem;color:#666">Optimized PyTorch Module (45KB)</div>
+              </div>
+            </a>
+            <a href="#" class="file-card" onclick="alert('Downloading Training Config...')">
+              <span class="file-icon">⚙️</span>
+              <div>
+                <div style="font-weight:600">config_pems.yaml</div>
+                <div style="font-size:0.8rem;color:#666">Hyperparameters & Training Logs</div>
+              </div>
+            </a>
+          `;
+          finalMsg.appendChild(dlContainer);
+          scrollToBottom();
         }
-    </script>
+      }
+    } else {
+      // Fallback response for non-scripted inputs
+      await sleep(1000);
+      addMessage('bot', "I received your request. However, for this demo, please try asking about <em>'PeMS'</em> or <em>'Traffic Prediction'</em> to see the full workflow simulation.");
+    }
+  }
+
+  // 页面加载完成后，聚焦输入框
+  window.onload = () => {
+    input.focus();
+  };
+</script>
+
 </body>
 </html>
