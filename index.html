@@ -19,7 +19,7 @@
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      /* 确保文件名与你本地 fig 文件夹中的一致 (.png) */
+      /* 确保背景图路径和文件名正确 */
       background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('./fig/bg_tech.png');
       background-size: cover;
       background-position: center;
@@ -138,32 +138,32 @@
   const input = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
 
-  // --- BikeNYC-I 定制剧本 (无错误代码) ---
+  // --- BikeNYC-I 定制剧本 ---
   const demoScript = {
-    trigger: ["bike", "nyc", "自行车", "纽约"], // 关键词
+    trigger: ["bike", "nyc", "自行车", "纽约"], 
     flow: [
       { type: 'text', delay: 200, content: "Received task: <strong>Bike Usage Forecasting in NYC (BikeNYC-I)</strong>. <br>Initializing AutoBricks framework..." },
       
       // Step 1: Retrieval & Analysis
+      [cite_start]// LocalCNN [cite: 180] is suitable for Grid-based spatial modeling.
       { type: 'log', delay: 800, content: [
         { status: 'processing', text: "Analyzing Topological Constraints..." },
         { status: 'success', text: "Identified Topology: <strong>Grid-based</strong> (Euclidean Coordinates detected)." },
         { status: 'processing', text: "Querying Brick Registry & History Logs..." },
-        // LocalCNN, ConvLSTM 是适合 Grid 的组件
         { status: 'success', text: "Retrieved Spatial Anchors: <span style='color:#fff'>[LocalCNN, ConvLSTM, ST-ResNet]</span>" },
-        // AttentiveLSTM 是 Temporal 组件
         { status: 'success', text: "Retrieved Temporal Anchors: <span style='color:#fff'>[AttentiveLSTM, PyramidalConvGRU]</span>" },
         { status: 'warning', text: "<strong>Constraint Applied:</strong> Graph operators (GCN/GAT) suppressed for Grid topology." }
       ]},
 
       // Step 2: Assembly & Optimization
+      // Combining Spatial (LocalCNN) and Temporal (AttentiveLSTM) components.
       { type: 'text', delay: 1200, content: "Constructing Directed Acyclic Graph (DAG) based on retrieved anchors and accuracy-first strategy..." },
       
       { type: 'log', delay: 1000, content: [
         { status: 'processing', text: "<strong>Trial Assembly:</strong> { Spatial: LocalCNN, Temporal: AttentiveLSTM }" },
         { status: 'processing', text: "Hyperparameter Search: Hidden Dim=128, Spatial Layers=4, Temporal Layers=2" },
         { status: 'success', text: "Syntax Check: PASSED" },
-        // 真实数据展示
+        // Results referencing user provided data
         { status: 'success', text: "<strong>Performance Est. (MAE): 1.229</strong> (Superior to Baseline 1.593)" }, 
         { status: 'success', text: "Model Complexity: 0.6074M Parameters (Efficient)" }
       ]},
