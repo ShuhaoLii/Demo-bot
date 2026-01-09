@@ -138,15 +138,13 @@
   const input = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
 
-  // --- BikeNYC-I 定制剧本 (优化时间间隔) ---
+  // --- BikeNYC-I 定制剧本 ---
   const demoScript = {
     trigger: ["bike", "nyc", "自行车", "纽约"], 
     flow: [
-      // 1. 快速响应收到指令 (0.6秒)
       { type: 'text', delay: 600, content: "Received task: <strong>Bike Usage Forecasting in NYC (BikeNYC-I)</strong>. <br>Initializing AutoBricks framework..." },
       
       // Step 1: Retrieval & Analysis
-      // 2. 检索阶段 (2.0秒) - 模拟数据库查询耗时
       { type: 'log', delay: 3000, content: [
         { status: 'processing', text: "Analyzing Topological Constraints..." },
         { status: 'success', text: "Identified Topology: <strong>Grid-based</strong> (Euclidean Coordinates detected)." },
@@ -157,10 +155,8 @@
       ]},
 
       // Step 2: Assembly & Optimization
-      // 3. 开始组装提示 (2.0秒)
       { type: 'text', delay: 2000, content: "Constructing Directed Acyclic Graph (DAG) based on retrieved anchors and accuracy-first strategy..." },
       
-      // 4. 核心计算阶段 (5.5秒) - 模拟最耗时的组装、编译和测试过程
       { type: 'log', delay: 5500, content: [
         { status: 'processing', text: "<strong>Trial Assembly:</strong> { Spatial: LocalCNN, Temporal: AttentiveLSTM }" },
         { status: 'processing', text: "Hyperparameter Search: Hidden Dim=128, Spatial Layers=4, Temporal Layers=2" },
@@ -170,7 +166,6 @@
       ]},
 
       // Step 3: Final Output
-      // 5. 最终呈现 (1.5秒)
       { type: 'final', delay: 2500, content: "Optimization Complete. The model <strong>AutoBricks-BikeNYC-V1</strong> has been generated." }
     ]
   };
@@ -218,7 +213,7 @@
     
     if (isTriggered) {
       for (const step of demoScript.flow) {
-        await sleep(step.delay || 1000); // 使用每个步骤定义的 delay
+        await sleep(step.delay || 1000); 
         
         if (step.type === 'text') {
           addMessage('bot', step.content);
@@ -278,7 +273,7 @@
     return logDiv;
   }
 
-  // --- 生成下载卡片 ---
+  // --- 关键修改：指向 models 目录下的真实文件 ---
   function appendDownloadCards(parentDiv) {
     const container = document.createElement('div');
     container.style.marginTop = "15px";
@@ -286,12 +281,11 @@
     container.style.gap = "10px";
     container.style.flexWrap = "wrap";
 
-    // Card 1: Config Yaml
+    // Card 1: Config Yaml (真实文件链接)
     const configCard = document.createElement('a');
     configCard.className = 'file-card';
-    const configContent = `dataset: BikeNYC\ntopology: Grid\nmodel:\n  spatial: LocalCNN\n  temporal: AttentiveLSTM\n  layers: [4, 2]\n  hidden_dim: 128\nmetrics:\n  MAE: 1.229\n  Params: 0.6074M`;
-    configCard.href = 'data:text/yaml;charset=utf-8,' + encodeURIComponent(configContent);
-    configCard.download = 'config_bikenyc.yaml';
+    configCard.href = './models/config_bikenyc.yaml'; // <--- 修改这里：指向真实路径
+    configCard.setAttribute('download', 'config_bikenyc.yaml'); // 强制下载
     configCard.innerHTML = `
       <span class="file-icon">⚙️</span>
       <div class="file-info">
@@ -300,12 +294,11 @@
       </div>
     `;
 
-    // Card 2: Python Code
+    // Card 2: Python Code (真实文件链接)
     const codeCard = document.createElement('a');
     codeCard.className = 'file-card';
-    const pyContent = `import torch\nimport torch.nn as nn\n\n# AutoBricks Generated Model for BikeNYC\nclass AutoBricksModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        # Spatial Brick: LocalCNN (Selected for Grid Topology)\n        self.spatial = LocalCNN(in_channels=2, out_channels=128, layers=4)\n        \n        # Temporal Brick: AttentiveLSTM (Selected for Sequence)\n        self.temporal = AttentiveLSTM(hidden_dim=128, layers=2)\n        \n        self.fusion = nn.Linear(128, 1)\n\n    def forward(self, x):\n        x = self.spatial(x)\n        x = self.temporal(x)\n        return self.fusion(x)`;
-    codeCard.href = 'data:text/x-python;charset=utf-8,' + encodeURIComponent(pyContent);
-    codeCard.download = 'model_bikenyc.py';
+    codeCard.href = './models/model_bikenyc.py'; // <--- 修改这里：指向真实路径
+    codeCard.setAttribute('download', 'model_bikenyc.py'); // 强制下载
     codeCard.innerHTML = `
       <span class="file-icon">🐍</span>
       <div class="file-info">
