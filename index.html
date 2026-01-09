@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AutoBricks: Automated Modular Assembly</title>
   <style>
-    /* --- 核心样式保持不变 --- */
+    /* --- 核心样式 --- */
     :root {
       --primary-color: #0d6efd;
       --bg-color: #f4f7f6;
@@ -19,7 +19,7 @@
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      /* 确保这里是 .png，匹配你之前上传的文件 */
+      /* 确保文件名与你本地 fig 文件夹中的一致 (.png) */
       background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('./fig/bg_tech.png');
       background-size: cover;
       background-position: center;
@@ -138,32 +138,32 @@
   const input = document.getElementById('userInput');
   const sendBtn = document.getElementById('sendBtn');
 
-  // --- 核心改动：BikeNYC-I 定制剧本 ---
+  // --- BikeNYC-I 定制剧本 (无错误代码) ---
   const demoScript = {
-    trigger: ["bike", "nyc", "自行车", "纽约"], // 只要包含这些词就会触发
+    trigger: ["bike", "nyc", "自行车", "纽约"], // 关键词
     flow: [
       { type: 'text', delay: 200, content: "Received task: <strong>Bike Usage Forecasting in NYC (BikeNYC-I)</strong>. <br>Initializing AutoBricks framework..." },
       
-      [cite_start]// Step 1: Retrieval & Analysis (基于你提供的数据) [cite: 195, 292]
+      // Step 1: Retrieval & Analysis
       { type: 'log', delay: 800, content: [
         { status: 'processing', text: "Analyzing Topological Constraints..." },
         { status: 'success', text: "Identified Topology: <strong>Grid-based</strong> (Euclidean Coordinates detected)." },
         { status: 'processing', text: "Querying Brick Registry & History Logs..." },
-        [cite_start]// 根据论文 Table 1，LocalCNN, ConvLSTM 是 Spatial Bricks [cite: 180]
+        // LocalCNN, ConvLSTM 是适合 Grid 的组件
         { status: 'success', text: "Retrieved Spatial Anchors: <span style='color:#fff'>[LocalCNN, ConvLSTM, ST-ResNet]</span>" },
-        [cite_start]// 根据论文 Table 1，AttentiveLSTM 是 Temporal Bricks [cite: 180]
+        // AttentiveLSTM 是 Temporal 组件
         { status: 'success', text: "Retrieved Temporal Anchors: <span style='color:#fff'>[AttentiveLSTM, PyramidalConvGRU]</span>" },
         { status: 'warning', text: "<strong>Constraint Applied:</strong> Graph operators (GCN/GAT) suppressed for Grid topology." }
       ]},
 
-      [cite_start]// Step 2: Assembly & Optimization (AutoBricks 流程) [cite: 55]
+      // Step 2: Assembly & Optimization
       { type: 'text', delay: 1200, content: "Constructing Directed Acyclic Graph (DAG) based on retrieved anchors and accuracy-first strategy..." },
       
       { type: 'log', delay: 1000, content: [
         { status: 'processing', text: "<strong>Trial Assembly:</strong> { Spatial: LocalCNN, Temporal: AttentiveLSTM }" },
         { status: 'processing', text: "Hyperparameter Search: Hidden Dim=128, Spatial Layers=4, Temporal Layers=2" },
         { status: 'success', text: "Syntax Check: PASSED" },
-        // 使用你提供的真实数据
+        // 真实数据展示
         { status: 'success', text: "<strong>Performance Est. (MAE): 1.229</strong> (Superior to Baseline 1.593)" }, 
         { status: 'success', text: "Model Complexity: 0.6074M Parameters (Efficient)" }
       ]},
@@ -177,12 +177,12 @@
     if (e.key === 'Enter') sendMessage();
   }
 
-  // --- 修复了按钮可能卡住的逻辑 (增加了 try/finally) ---
+  // --- 发送消息逻辑 (包含错误处理，防止按钮卡死) ---
   async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    // 1. 发送消息上屏
+    // 1. 上屏用户消息
     addMessage('user', text);
     input.value = '';
     
@@ -197,10 +197,10 @@
       // 3. 执行逻辑
       await processAutoBricksLogic(text);
     } catch (e) {
-      console.error(e);
+      console.error(e); // 在控制台打印错误
       addMessage('bot', `<span style="color:red">Error: ${e.message}</span>`);
     } finally {
-      // 4. 无论如何都要解锁按钮 (防止卡死)
+      // 4. 解锁按钮 (无论成功失败)
       input.disabled = false;
       sendBtn.disabled = false;
       sendBtn.innerText = "Generate";
@@ -284,7 +284,7 @@
     container.style.gap = "10px";
     container.style.flexWrap = "wrap";
 
-    // Card 1: Config Yaml (Data URI)
+    // Card 1: Config Yaml
     const configCard = document.createElement('a');
     configCard.className = 'file-card';
     const configContent = `dataset: BikeNYC\ntopology: Grid\nmodel:\n  spatial: LocalCNN\n  temporal: AttentiveLSTM\n  layers: [4, 2]\n  hidden_dim: 128\nmetrics:\n  MAE: 1.229\n  Params: 0.6074M`;
@@ -298,10 +298,9 @@
       </div>
     `;
 
-    // Card 2: Python Code (Data URI)
+    // Card 2: Python Code
     const codeCard = document.createElement('a');
     codeCard.className = 'file-card';
-    // 模拟的 BikeNYC 代码结构
     const pyContent = `import torch\nimport torch.nn as nn\n\n# AutoBricks Generated Model for BikeNYC\nclass AutoBricksModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        # Spatial Brick: LocalCNN (Selected for Grid Topology)\n        self.spatial = LocalCNN(in_channels=2, out_channels=128, layers=4)\n        \n        # Temporal Brick: AttentiveLSTM (Selected for Sequence)\n        self.temporal = AttentiveLSTM(hidden_dim=128, layers=2)\n        \n        self.fusion = nn.Linear(128, 1)\n\n    def forward(self, x):\n        x = self.spatial(x)\n        x = self.temporal(x)\n        return self.fusion(x)`;
     codeCard.href = 'data:text/x-python;charset=utf-8,' + encodeURIComponent(pyContent);
     codeCard.download = 'model_bikenyc.py';
